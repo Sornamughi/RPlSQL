@@ -1,0 +1,81 @@
+-- The example below will explain use of procedure, function and Triggers.
+-- We will create sample table first 
+
+CREATE TABLE COMPANY(
+   ID INT PRIMARY KEY     NOT NULL,
+   NAME           TEXT    NOT NULL,
+   AGE            INT     NOT NULL,
+   ADDRESS        CHAR(50),
+   SALARY         REAL
+);
+
+-- Note: A function must return a value (of any type) by default definition
+-- whereas in case of a procedure you need to use parameters like OUT or IN OUT parameters to get the result
+-- Note as $$ --- $$ is to escape single quotes in the queries
+
+-- The below procedure will help to automate the insert query
+
+-- Procedure definition
+create or replace procedure ins_emp(
+   emp_id int,
+   NAME TEXT,
+   AGE INT,
+   address CHAR(50),
+   salary REAL
+)
+as $$
+begin    
+	INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) VALUES (emp_id,name,age,address,salary);
+    commit;
+end; 
+$$ language plpgsql;
+
+--calling procedure
+call ins_emp(1, 'Name1', 33, 'California', 20000.00);
+call ins_emp(2, 'Name2', 32, 'NewYork', 30000.00);
+call ins_emp(3, 'Name3', 33, 'California', 10000.00);
+call ins_emp(4, 'Name4', 34, 'NewYork', 31000.00);
+call ins_emp(5, 'Name5', 35, 'California', 80000.00);
+call ins_emp(6, 'Name6', 36, 'NewYork', 50000.00);
+
+-----------------------------------------------------------
+
+--Belwo function will help to return the count of company table
+
+--function definition
+create or replace function get_details() returns integer as $$
+	declare
+		total integer;
+	begin
+		select count(*) into total from company;
+		return total;
+	end;
+	$$ language plpgsql;
+
+--functin call
+select get_details();
+-----------------------------------------------------------------------------
+
+-- Trigger in eneral to maintain the history. Fist create audit table
+
+CREATE TABLE AUDIT(
+   EMP_ID INT NOT NULL,
+   ENTRY_DATE TEXT NOT NULL
+);
+
+-- Also define the trigger function first then define the trigger
+
+CREATE OR REPLACE FUNCTION auditlogfunc() RETURNS TRIGGER AS $$
+   BEGIN
+      INSERT INTO AUDIT(EMP_ID, ENTRY_DATE) VALUES (new.ID, current_timestamp);
+      RETURN NEW;
+   END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER example_trigger AFTER INSERT ON COMPANY
+FOR EACH ROW EXECUTE PROCEDURE auditlogfunc();
+
+call ins_emp(7, 'Name7', 36, 'NewYork', 50000.00);
+
+select * from AUDIT;
+---------------------------------------------------------------------------
