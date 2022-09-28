@@ -1,0 +1,45 @@
+SQL - Structured query language
+Used to manipulate and access data from DB
+
+RDBMS - Relational DataBase Management System
+Stores data in the form of rows(record) and columns(fields) in a table.
+The tables can be related with one another.
+
+----to view list of tables in db
+information_schema.tables will contain the list of tables
+or pg_catalog.pg_tables 
+
+SELECT tablename 
+FROM pg_catalog.pg_tables   
+WHERE schemaname != 'information_schema' AND schemaname !=  'pg_catalog'  
+ORDER BY tablename 
+
+----to view list of tables in db using psql
+\dt or \dt+
+
+----column information of tables will be stored
+ in information_schema.column filter by table name
+
+-------types of SQL Commands
+1. DDL- Create, Alter, Drop, Truncate
+2. DML- Insert, Update, Delete, Merge
+3. TCL- Commit, Rollback and Savepoint
+4. DCL- Grant, Revoke
+5. DQL - Select
+
+-----why normalization
+1. remove duplicate data
+2. reduces database anomalies
+3. reduce redundancy
+4. larger DB into smaller tables which are linked
+
+
+1NF - all attributes in table will contain only atomic value
+2NF - no partial dependency(non prime key dependant on part of primary key)
+3NF - no transitive dependency(non primary key dependant on non primary key)
+BCNF - LHS of functional dependency must be super key 
+4 NF - no multivalued dependency(for single value of A, more than one value of B exists)
+5 NF - no Join dependency(R can be broken in to R1,R2..and rejoined back to R)
+
+
+

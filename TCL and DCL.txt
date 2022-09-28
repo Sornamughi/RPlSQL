@@ -1,0 +1,44 @@
+-----TCL
+A transaction must follow ACID properties
+Atomicity - Transaction should be executed fully or nothing
+Consistency - data changes must follow constraints
+Isolation - Other Transaction must not be affected by transaction in progess
+Durability - changes committed are permanent in DB
+
+
+BEGIN;
+UPDATE <table_name> SET <field_name> = <value> WHERE condition;
+ROLLBACK;
+
+BEGIN;
+UPDATE <table_name> SET <field_name> = <value> WHERE condition;
+COMMIT;
+
+BEGIN;
+UPDATE <table_name> SET <field_name> = <value> WHERE condition;
+SAVEPOINT sp1;
+UPDATE <table_name> SET <field_name> = <value> WHERE condition; --different record
+SAVEPOINT sp2;
+ROLLBACK TO SAVEPOINT sp1; --- changes after sp1 is rolled ba---ck
+ROLLBACK---all changes are rolled back
+
+BEGIN;
+UPDATE <table_name> SET <field_name> = <value> WHERE condition;
+SAVEPOINT sp1;
+UPDATE <table_name> SET <field_name> = <value> WHERE condition; --different record
+SAVEPOINT sp2;
+ROLLBACK TO SAVEPOINT sp1; --- changes after sp1 is rolled back
+COMMIT;---changes before sp1 are committed
+
+
+---------DCL
+these commands are used to grant, revoke and deny access to
+retrieving and manipulation of data in db.
+admin grants, revokes or deny access to users.
+
+----GRANT
+GRANT SELECT, UPDATE, INSERT, DELETE, ALTER / ALL ON <tabename> TO <user>
+REVOKE SELECT, UPDATE, INSERT, DELETE, ALTER / ALL ON <tabename> TO <user>
+
+CREATE USER <username>;
+GRANT ALL PREVILEGES ON DATABASE <databasename> TO <username>
